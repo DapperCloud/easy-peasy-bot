@@ -109,6 +109,7 @@ controller.hears('status .*', 'direct_message', function (bot, message) {
             return;
         }
         bot.reply(message, "Summary: `"+issue.fields.summary+"`"
+            +"\nStatus: *`"+issue.fields.status.name+"`*"
             +"\nLabels: `"+issue.fields.labels+"`"
             +"\nPriority: `"+issue.fields.priority.name+"`"
             +"\nAssignee: `"+issue.fields.assignee.name+"` ("+issue.fields.assignee.emailAddress+")");
