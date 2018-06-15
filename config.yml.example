@@ -1,3 +1,4 @@
 jira:
   username: 'your_jira_username_here'
   password: 'your_jira_password_here'
+token: 'your_bot_token_here'
