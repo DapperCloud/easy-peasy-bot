@@ -95,6 +95,11 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
+function handleError(bot, message, error) {
+    console.log("An error happened: "+error);
+    bot.reply(message, "Error: "+error);
+}
+
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
@@ -105,8 +110,7 @@ controller.hears('status .*', 'direct_message', function (bot, message) {
         issueKey: ticketNumber
     }, function(error, issue) {
         if(error) {
-            console.log("Error fetching ticket: "+error);
-            bot.reply(message, "Error: "+error);
+            handleError(bot, message, error);
             return;
         }
         bot.reply(message, "Summary: `"+issue.fields.summary+"`"
@@ -116,6 +120,40 @@ controller.hears('status .*', 'direct_message', function (bot, message) {
             +"\nAssignee: `"+issue.fields.assignee.name+"` ("+issue.fields.assignee.emailAddress+")");
     });
 });
+
+controller.hears('label .*', 'direct_message', function (bot, message) {
+    var label = message.text.split(" ")[1];
+
+    var options = {
+        uri: jira.buildURL('/search'),
+        method: 'POST',
+        json: true,
+        followAllRedirects: true,
+        body: {
+            jql: "labels IN ("+label+") AND status in (\"in progress\")",
+            maxResults: 50
+        }
+    };
+    jira.makeRequest(options, function(error, issues) {
+        if(error) {
+            handleError(bot, message, error);
+            return;
+        }
+        var titlesLinks = issues.issues.map(function(e) {
+            return {
+                title: e.fields.summary,
+                link: "https://alchemytec.atlassian.net/browse/"+e.key
+            };
+        });
+
+        var reply = "";
+        for (i = 0; i < titlesLinks.length; i++) {
+            reply += titlesLinks[i].title+": "+titlesLinks[i].link+"\n";
+        }
+        bot.reply(message, reply);
+    });
+});
+
 
 /**
  * AN example of what could be:
