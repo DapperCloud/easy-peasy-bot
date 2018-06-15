@@ -126,3 +126,9 @@ controller.hears('label .*', 'direct_message', function (bot, message) {
         bot.reply(message, reply);
     });
 });
+
+controller.hears('.*blockchain.*', 'direct_message', function(bot, message) {
+    console.log("toto");
+    bot.reply(message, "A blockchain issue has been created and been assigned to `philippe.araujo`."
+        +"\nFor all your questions about blockchain, please ask philippe.araujo@engagetech.com");
+});
