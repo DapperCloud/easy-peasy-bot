@@ -1,7 +1,3 @@
-/**
- * A Bot for Slack!
- */
-
 var JiraClient = require('jira-connector');
 var jsyaml = require('js-yaml');
 var fs = require('fs');
@@ -52,34 +48,11 @@ if (process.env.MONGOLAB_URI) {
 }
 
 /**
- * Are being run as an app or a custom integration? The initialization will differ, depending
+ * Run the bot
  */
-
-/*if (process.env.TOKEN || process.env.SLACK_TOKEN) {
-    //Treat this as a custom integration
-    var customIntegration = require('./lib/custom_integrations');
-    var token = (process.env.TOKEN) ? process.env.TOKEN : process.env.SLACK_TOKEN;
-    var controller = customIntegration.configure(token, mongoConfig, onInstallation);
-} else if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
-    //Treat this as an app
-    var app = require('./lib/apps');
-    var controller = app.configure(process.env.PORT, process.env.CLIENT_ID, process.env.CLIENT_SECRET, mongoConfig, onInstallation);
-} else {
-    console.log('Error: If this is a custom integration, please specify TOKEN in the environment. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
-    process.exit(1);
-}*/
 var customIntegration = require('./lib/custom_integrations');
 var controller = customIntegration.configure(config.token, mongoConfig, onInstallation);
 
-/**
- * A demonstration for how to handle websocket events. In this case, just log when we have and have not
- * been disconnected from the websocket. In the future, it would be super awesome to be able to specify
- * a reconnect policy, and do reconnections automatically. In the meantime, we aren't going to attempt reconnects,
- * WHICH IS A B0RKED WAY TO HANDLE BEING DISCONNECTED. So we need to fix this.
- *
- * TODO: fixed b0rked reconnect behavior
- */
-// Handle events related to the websocket connection to Slack
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
 });
@@ -153,21 +126,3 @@ controller.hears('label .*', 'direct_message', function (bot, message) {
         bot.reply(message, reply);
     });
 });
-
-
-/**
- * AN example of what could be:
- * Any un-handled direct mention gets a reaction and a pat response!
- */
-//controller.on('direct_message,mention,direct_mention', function (bot, message) {
-//    bot.api.reactions.add({
-//        timestamp: message.ts,
-//        channel: message.channel,
-//        name: 'robot_face',
-//    }, function (err) {
-//        if (err) {
-//            console.log(err)
-//        }
-//        bot.reply(message, 'I heard you loud and clear boss.');
-//    });
-//});
