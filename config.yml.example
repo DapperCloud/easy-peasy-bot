@@ -1,0 +1,3 @@
+jira:
+  username: 'your_jira_username_here'
+  password: 'your_jira_password_here'
