@@ -85,8 +85,9 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
-controller.hears('hello', 'direct_message', function (bot, message) {
-    bot.reply(message, 'Hello!');
+controller.hears('status .*', 'direct_message', function (bot, message) {
+    var ticketNumber = message.text.split(" ")[1];
+    bot.reply(message, "Printing "+ticketNumber+" status...");
 });
 
 
